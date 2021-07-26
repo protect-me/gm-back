@@ -16,7 +16,7 @@ var connection = mysql.createConnection({
   port: 3306,
   user: 'root',
   password: '1008',
-  database: 'pwa_crud'
+  database: 'gain_muscle'
 });
 // Connect
 connection.connect(function (err) {
@@ -38,6 +38,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
