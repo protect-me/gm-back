@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 // Encryption
 const bcrypt = require('bcryptjs'); // password
-const { v4: uuidv4 } = require('uuid') // uuid
 // mysql
 var mysqlConnection = require('../utils/mysqlConnection');
 var connection = mysqlConnection.getConnection()
@@ -19,7 +18,6 @@ router.post('/signUp', function (req, res) {
     'userId': req.body.form.userId,
     'password': req.body.form.password,
   };
-  user.userUuid = uuidv4()
 
   connection.query(`SELECT userId FROM users WHERE userId = '${user.userId}'`, function (err, row) {
     if (err) throw err;
@@ -28,7 +26,7 @@ router.post('/signUp', function (req, res) {
       const encryptedPassword = bcrypt.hashSync(user.password, salt);
       connection.query(
         `INSERT INTO users (userUuid, userId, password) 
-          VALUES ('${user.userUuid}', '${user.userId}', '${encryptedPassword}')
+          VALUES (uuid(), '${user.userId}', '${encryptedPassword}')
         `, function (err, row2) {
         if (err) throw err;
       });
@@ -51,7 +49,7 @@ router.post('/login', function (req, res) {
     'userId': req.body.form.userId,
     'password': req.body.form.password
   };
-  connection.query(`SELECT userId, password FROM users WHERE userId = '${user.userId}'`,
+  connection.query(`SELECT userUuid, userId, password FROM users WHERE userId = '${user.userId}'`,
     function (err, row) {
       if (err) throw err;
       if (row[0] == undefined) {
@@ -66,6 +64,7 @@ router.post('/login', function (req, res) {
           if (res2) {
             res.json({ // 로그인 성공 
               success: true,
+              userUuid: row[0].userUuid,
               message: 'Login Successful! 🧙🏻‍♂️'
             })
           }

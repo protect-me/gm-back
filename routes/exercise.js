@@ -25,8 +25,8 @@ router.post('/regist', async (req, res) => {
 
   try {
     connection.query(
-      `INSERT INTO exercise (name,category,target,note) 
-        VALUES ('${exercise.name}', '${exercise.category}', '${exercise.target}', '${exercise.note}')`,
+      `INSERT INTO exercise (exerciseUuid,name,category,target,note) 
+        VALUES (uuid(), '${exercise.name}', '${exercise.category}', '${exercise.target}', '${exercise.note}')`,
       exercise, function (err, row) {
         if (err) throw err;
       }
