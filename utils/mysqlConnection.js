@@ -7,7 +7,8 @@ exports.getConnection = () => {
     port: 3306,
     user: 'root',
     password: '1008',
-    database: 'gain_muscle'
+    database: 'gain_muscle',
+    multipleStatements: true
   });
   // Connect
   connection.connect(function (err) {
