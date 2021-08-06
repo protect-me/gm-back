@@ -7,23 +7,25 @@ const { v4: uuidv4 } = require('uuid') // uuid
 
 router.get('/:userUuid', async (req, res) => {
   const userUuid = req.params.userUuid;
-  console.log(userUuid);
-  res.json({
-    success: true,
-    message: 'get 🧙🏻‍♂️'
-  })
-  // const userUuid = req.queryd
-  // try {
-  //   connection.query(`SELECT * FROM routine WHERE userUuid = ${}`, function (err, rows) {
-  //     if (err) throw err;
-  //     res.send(rows);
-  //   });
-  // } catch (err) {
-  //   res.json({
-  //     success: false,
-  //     message: '조회 실패 🧙🏻‍♂️'
-  //   })
-  // }
+  try {
+    connection.query(
+      `SELECT * FROM routine WHERE userUuid = '${userUuid}'
+      ORDER BY 
+      createdAt DESC, routineGroupUuid ASC, countOfExercise ASC, countOfSet ASC`
+      , function (err, rows) {
+        if (err) throw err;
+        res.json({
+          success: true,
+          rows: rows,
+          message: '조회 성공 🧙🏻‍♂️'
+        })
+      })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: '조회 실패 🧙🏻‍♂️'
+    })
+  }
 });
 
 router.post('/regist', function (req, res) {
@@ -33,7 +35,7 @@ router.post('/regist', function (req, res) {
     item.push(uuidv4(), routineGroupUuid) // 개별 routine line은 고유하게 세팅
   })
   const query = `INSERT INTO routine 
-  (userUuid, exerciseUuid, countOfExercise, countOfSet, plusWeight, minusWeight, lap, timeMin, timeSec, routineUuid, routineGroupUuid)
+  (routineGroupName, userUuid, exerciseUuid, countOfExercise, countOfSet, plusWeight, minusWeight, lap, timeMin, timeSec, routineUuid, routineGroupUuid)
   values ?;`;
   try {
     connection.query(query, [newRoutine], (err, row) => {
