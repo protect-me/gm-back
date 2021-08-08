@@ -9,8 +9,12 @@ router.get('/', async (req, res) => {
   try {
     connection.query('SELECT * FROM exercise', function (err, rows) {
       if (err) throw err;
-      res.send(rows);
-    });
+      res.json({
+        success: true,
+        rows: rows,
+        message: '조회 성공 🧙🏻‍♂️'
+      })
+    })
   } catch (err) {
     res.json({
       success: false,
@@ -107,7 +111,7 @@ router.post('/edit', async (req, res) => {
 
 router.delete('/delete/:exerciseUuid', async (req, res) => {
   const exerciseUuid = req.params.exerciseUuid
-  console.log(exerciseUuid);
+  // console.log(exerciseUuid);
   try {
     connection.query(
       `DELETE FROM exercise WHERE exerciseUuid = '${exerciseUuid}'`, function (err, row) {
