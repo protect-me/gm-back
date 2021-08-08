@@ -39,7 +39,7 @@ router.get('/:userUuid', async (req, res) => {
 
 router.post('/regist', function (req, res) {
   const routineGroupUuid = uuidv4() // 함께 Insert되는 routine을 한 그룹으로 묶음
-  const newRoutine = req.body.newRoutine
+  const newRoutine = req.body.reqData.newRoutine
   newRoutine.forEach(item => {
     item.push(uuidv4(), routineGroupUuid) // 개별 routine line은 고유하게 세팅
   })
@@ -51,19 +51,19 @@ router.post('/regist', function (req, res) {
       if (err) {
         res.json({
           success: false,
-          message: 'Regist Failed :(' + err
+          message: 'Routine Regist Failed :(' + err
         })
       } else {
         res.json({
           success: true,
-          message: 'Regist Success :)'
+          message: 'Routine Regist Success :)'
         })
       }
     });
   } catch (err) {
     res.json({
       success: false,
-      message: 'Regist Failed :(' + err
+      message: 'Routine Regist Failed :(' + err
     })
   }
 });
