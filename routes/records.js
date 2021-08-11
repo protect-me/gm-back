@@ -4,6 +4,47 @@ var mysqlConnection = require('../utils/mysqlConnection');
 var connection = mysqlConnection.getConnection()
 const { v4: uuidv4 } = require('uuid') // uuid
 
+// function getTimes(req, res, next) {
+//   req.params
+// }
+
+
+router.get('/:userUuid', async (req, res) => {
+  const userUuid = req.params.userUuid;
+  try {
+    connection.query(
+      // `SELECT * FROM routine WHERE userUuid = '${userUuid}'
+      // ORDER BY createdAt DESC, routineGroupUuid ASC, countOfExercise ASC, countOfSet ASC`
+      `SELECT 
+      a.recordsUuid, a.routineGroupName, a.recordsGroupUuid, a.userUuid, a.exerciseUuid, 
+      a.countOfExercise, a.countOfSet, a.plusWeight, a.minusWeight, a.lap, a.timeMin, a.timeSec,
+      b.name, b.category, b.target, b.note, c.startTime, c.endTime
+      FROM records AS a
+      LEFT JOIN exercise AS b
+      ON a.exerciseUuid = b.exerciseUuid
+      LEFT JOIN recordsMeta As c
+      ON a.recordsGroupUuid = c.recordsGroupUuid
+      WHERE a.userUuid = '${userUuid}'
+      ORDER BY 
+      a.createdAt DESC, a.recordsGroupUuid ASC, a.countOfExercise ASC, a.countOfSet ASC`
+      , function (err, rows) {
+        if (err) throw err;
+        res.json({
+          success: true,
+          rows: rows,
+          message: '조회 성공 🧙🏻‍♂️'
+        })
+      })
+  } catch (err) {
+    res.json({
+      success: false,
+      message: '조회 실패 🧙🏻‍♂️'
+    })
+  }
+});
+
+
+
 function registRecordsMeta(req, res, next) {
   const recordsGroupUuid = uuidv4() // 함께 Insert되는 routine을 한 그룹으로 묶음
   const newRoutine = req.body.reqData.newRoutine
