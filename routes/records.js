@@ -17,7 +17,8 @@ router.get('/:userUuid', async (req, res) => {
       // ORDER BY createdAt DESC, routineGroupUuid ASC, countOfExercise ASC, countOfSet ASC`
       `SELECT 
       a.recordsUuid, a.routineGroupName, a.recordsGroupUuid, a.userUuid, a.exerciseUuid, 
-      a.countOfExercise, a.countOfSet, a.plusWeight, a.minusWeight, a.lap, a.timeMin, a.timeSec,
+      a.countOfExercise, a.countOfSet, a.plusWeight, a.minusWeight, a.lap, 
+      a.timeMin, a.timeSec, a.status,
       b.name, b.category, b.target, b.note, c.startTime, c.endTime
       FROM records AS a
       LEFT JOIN exercise AS b
@@ -79,7 +80,7 @@ function registRecordsMeta(req, res, next) {
 router.post('/regist', registRecordsMeta, function (req, res) {
   const newRoutine = req.body.reqData.newRoutine
   const query = `INSERT INTO records
-      (routineGroupName, userUuid, exerciseUuid, countOfExercise, countOfSet, plusWeight, minusWeight, lap, timeMin, timeSec, recordsUuid, recordsGroupUuid)
+      (routineGroupName, userUuid, exerciseUuid, countOfExercise, countOfSet, plusWeight, minusWeight, lap, timeMin, timeSec, status, recordsUuid, recordsGroupUuid)
     values ?; `;
   try {
     connection.query(query, [newRoutine], (err, row) => {
