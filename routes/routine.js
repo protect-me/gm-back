@@ -44,8 +44,8 @@ router.post('/regist', function (req, res) {
     item.push(uuidv4(), routineGroupUuid) // 개별 routine line은 고유하게 세팅
   })
   const query = `INSERT INTO routine
-      (routineGroupName, userUuid, exerciseUuid, countOfExercise, countOfSet, plusWeight, minusWeight, lap, timeMin, timeSec, routineUuid, routineGroupUuid)
-    values ?; `;
+                (routineGroupName, userUuid, exerciseUuid, countOfExercise, countOfSet, plusWeight, minusWeight, lap, timeMin, timeSec, routineUuid, routineGroupUuid)
+                values ?;`;
   try {
     connection.query(query, [newRoutine], (err, row) => {
       if (err) {
@@ -68,9 +68,61 @@ router.post('/regist', function (req, res) {
   }
 });
 
+router.post('/update', function (req, res) {
+  const routineGroupUuid = req.body.reqData.routineGroupUuid
+  const newRoutine = req.body.reqData.newRoutine
+  newRoutine.forEach(item => item.push(uuidv4()))
+  const deleteQuery = `DELETE FROM routine WHERE routineGroupUuid = '${routineGroupUuid}';`
+  const registQuery = `INSERT INTO routine
+                      (routineGroupName, userUuid, exerciseUuid, countOfExercise, countOfSet, plusWeight, minusWeight, lap, timeMin, timeSec, routineGroupUuid, routineUuid)
+                      values ?;` // post regist와 끝 요소 순서가 다름에 주의
+  try {
+    connection.query(deleteQuery + registQuery, [newRoutine], (err, row) => {
+      if (err) {
+        res.json({
+          success: false,
+          message: 'Routine Update Failed :(' + err
+        })
+      } else {
+        res.json({
+          success: true,
+          message: 'Routine Update Success :)'
+        })
+      }
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: 'Routine Update Failed :(' + err
+    })
+  }
+})
 
-// update
-// routineUuid로 뒤져서 기존에 있던거 다 삭제해줘야겠네.
+
+router.delete('/:routineGroupUuid', function (req, res) {
+  const routineGroupUuid = req.params.routineGroupUuid;
+  const query = `DELETE FROM routine WHERE routineGroupUuid = '${routineGroupUuid}';`
+  try {
+    connection.query(query, (err, row) => {
+      if (err) {
+        res.json({
+          success: false,
+          message: 'Routine Delete Failed :(' + err
+        })
+      } else {
+        res.json({
+          success: true,
+          message: 'Routine Regist Success :)'
+        })
+      }
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: 'Routine Delete Failed :(' + err
+    })
+  }
+})
 
 module.exports = router;
 
