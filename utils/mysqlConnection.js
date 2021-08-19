@@ -1,14 +1,15 @@
 var mysql = require('mysql');
+require("dotenv").config();
+
 
 exports.getConnection = () => {
   // Connection 객체 생성
   var connection = mysql.createConnection({
-    host: 'localhost',
-    port: 3306,
-    user: 'root',
-    password: '1008',
-    database: 'gain_muscle',
-    multipleStatements: true
+    host: process.env.host,
+    port: process.env.port,
+    user: process.env.user,
+    password: process.env.password,
+    database: process.env.database,
   });
   // Connect
   connection.connect(function (err) {
