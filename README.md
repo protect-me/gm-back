@@ -5,9 +5,11 @@
 Vue.js : v2 + MySQL + Vuetify + Node.js(Experss.js)
 
 ## Structure
+```
 gain-muscle 
-├── gm-front
-└── gm-back (current)
+├── gm-front (current)
+└── gm-back
+```
 
 ## Link
 시연 영상 Youtube (2배속 시청 권장) (배포 작업중)
